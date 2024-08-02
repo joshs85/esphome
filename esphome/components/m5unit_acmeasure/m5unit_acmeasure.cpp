@@ -55,7 +55,7 @@ void ACMeasureComponent::update() {
       if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
         ESP_LOGW(TAG, "Error reading voltage.");
       } else {
-        uint16_t value = read_buf[0] | (read_buf[1] << 8);
+        uint16_t value = read_buf[0] | (read_buf[1] << 8) / 100;
         ESP_LOGV(TAG, "Got voltage=%.2f °V", value);
         this->voltage_sensor_->publish_state(value);
       }
