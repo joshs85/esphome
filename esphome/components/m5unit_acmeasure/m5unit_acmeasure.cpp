@@ -52,8 +52,11 @@ bool ACMeasureComponent::getReady() {
 
 void ACMeasureComponent::update() {
   uint8_t read_buf[4];
-
-  if (this->voltage_sensor_ != nullptr && this->getReady()) {
+  if (!this->getReady()) {
+    ESP_LOGW(TAG, "Got data not ready when checking.");
+    return;
+  }
+  if (this->voltage_sensor_ != nullptr) {
     if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
       ESP_LOGW(TAG, "Error reading voltage.");
     } else {
