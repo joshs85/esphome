@@ -39,7 +39,7 @@ void ACMeasureComponent::setup() {
     this->mark_failed();
     return;
   }
-  if (read_buf[0] != 0) {
+  if (read_buf[0] != 1) {
     ESP_LOGCONFIG(TAG, "The device is not ready.");
     this->error_code_ = STATUS_FAILED;
     this->mark_failed();
