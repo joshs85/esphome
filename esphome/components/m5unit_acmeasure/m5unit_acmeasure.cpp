@@ -47,7 +47,7 @@ float ACMeasureComponent::get_setup_priority() const { return setup_priority::DA
 void ACMeasureComponent::update() {
   uint8_t read_buf[4] = {0};
   this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, read_buf, 1);
-  if (read_buf[0] == 1) {
+  if (read_buf[0] != 0) {
     uint8_t read_buf[4];
     ESP_LOGW(TAG, "Got data not ready when checking.");
 
