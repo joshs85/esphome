@@ -49,17 +49,15 @@ void ACMeasureComponent::update() {
   this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, (uint8_t *) read_buf, 1);
   if (read_buf[0] == 1) {
     uint8_t read_buf[4];
-    if (!getReady()) {
-      ESP_LOGW(TAG, "Got data not ready when checking.");
+    ESP_LOGW(TAG, "Got data not ready when checking.");
 
-      if (this->voltage_sensor_ != nullptr) {
-        if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
-          ESP_LOGW(TAG, "Error reading voltage.");
-        } else {
-          uint16_t value = read_buf[0] | (read_buf[1] << 8);
-          ESP_LOGV(TAG, "Got voltage=%.2f °V", value);
-          this->voltage_sensor_->publish_state(value);
-        }
+    if (this->voltage_sensor_ != nullptr) {
+      if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
+        ESP_LOGW(TAG, "Error reading voltage.");
+      } else {
+        uint16_t value = read_buf[0] | (read_buf[1] << 8);
+        ESP_LOGV(TAG, "Got voltage=%.2f °V", value);
+        this->voltage_sensor_->publish_state(value);
       }
     }
   }
