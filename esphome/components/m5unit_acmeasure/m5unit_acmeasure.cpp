@@ -7,7 +7,7 @@ namespace m5unit_acmeasure {
 
 static const char *const TAG = "m5unit_acmeasure.sensor";
 
-static const uint8_t UNIT_ACMEASURE_STATUS_REG = 0xFC;
+static const uint8_t UNIT_ACMEASURE_ERROR_STATUS_REG = 0xFC;
 static const uint8_t UNIT_ACMEASURE_VOLTAGE_REG = 0x60;
 static const uint8_t KMETER_FIRMWARE_VERSION_REG = 0xFE;
 
@@ -32,8 +32,8 @@ void ACMeasureComponent::setup() {
     return;
   }
 
-  uint8_t read_buf[4] = {0};
-  if (!this->read_bytes(UNIT_ACMEASURE_STATUS_REG, read_buf, 1)) {
+  char read_buf[7] = {0};
+  if (!this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, (uint8_t *) read_buf, 1)) {
     ESP_LOGCONFIG(TAG, "Could not read from the device.");
     this->error_code_ = COMMUNICATION_FAILED;
     this->mark_failed();
@@ -44,10 +44,16 @@ void ACMeasureComponent::setup() {
 
 float ACMeasureComponent::get_setup_priority() const { return setup_priority::DATA; }
 
+bool ACMeasureComponent::getReady() {
+  char read_buf[4] = {0};
+  this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, (uint8_t *) read_buf, 1))
+  return read_buf[0] == 1
+}
+
 void ACMeasureComponent::update() {
   uint8_t read_buf[4];
 
-  if (this->voltage_sensor_ != nullptr) {
+  if (this->voltage_sensor_ != nullptr && this->getReady()) {
     if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
       ESP_LOGW(TAG, "Error reading voltage.");
     } else {
