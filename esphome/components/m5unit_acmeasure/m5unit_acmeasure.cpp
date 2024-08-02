@@ -32,8 +32,8 @@ void ACMeasureComponent::setup() {
     return;
   }
 
-  char read_buf[7] = {0};
-  if (!this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, (uint8_t *) read_buf, 1)) {
+  uint8_t read_buf[4] = {1};
+  if (!this->read_bytes(UNIT_ACMEASURE_ERROR_STATUS_REG, read_buf, 1)) {
     ESP_LOGCONFIG(TAG, "Could not read from the device.");
     this->error_code_ = COMMUNICATION_FAILED;
     this->mark_failed();
