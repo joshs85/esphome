@@ -53,13 +53,13 @@ float ACMeasureComponent::get_setup_priority() const { return setup_priority::DA
 void ACMeasureComponent::update() {
   uint8_t read_buf[4];
 
-  if (this->temperature_sensor_ != nullptr) {
+  if (this->voltage_sensor_ != nullptr) {
     if (!this->read_bytes(UNIT_ACMEASURE_VOLTAGE_REG, read_buf, 2)) {
       ESP_LOGW(TAG, "Error reading temperature.");
     } else {
       uint16_t value = read_buf[0] | (read_buf[1] << 8);
       ESP_LOGV(TAG, "Got temperature=%.2f °C", temp_f);
-      this->temperature_sensor_->publish_state(value);
+      this->voltage_sensor_->publish_state(value);
     }
   }
 }
